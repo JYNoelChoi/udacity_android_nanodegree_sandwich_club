@@ -3,6 +3,7 @@ package com.udacity.sandwichclub;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
 import org.json.JSONException;
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -71,6 +73,8 @@ public class DetailActivity extends AppCompatActivity {
         // Load image
         Picasso.with(this)
                 .load(sandwich.getImage())
+                .placeholder(android.R.drawable.sym_def_app_icon) // Reviewer's suggestion (To provide default placeholder in case of error
+                .error(android.R.drawable.stat_notify_error) // Review's suggestion (To provide error image)
                 .into(ingredientsIv);
 
         setTitle(sandwich.getMainName());
@@ -83,16 +87,30 @@ public class DetailActivity extends AppCompatActivity {
         List<String> alsoKnownAsList = sandwich.getAlsoKnownAs();
         List<String> ingredientsList = sandwich.getIngredients();
 
-        for (String alsoKnownAs : alsoKnownAsList) {
-            alsoKnownAsTv.append(alsoKnownAs + "\n\n");
-        }
+        // for (String alsoKnownAs : alsoKnownAsList) {
+        //     alsoKnownAsTv.append(alsoKnownAs + "\n\n");
+        // }
+        //
+        // for (String ingredient : ingredientsList) {
+        //     ingredientsTv.append(ingredient + "\n\n");
+        // }
 
-        for (String ingredient : ingredientsList) {
-            ingredientsTv.append(ingredient + "\n\n");
-        }
+        String noData = "No Data Available.";
+        // String placeOfOrigin = sandwich.getPlaceOfOrigin();
+        String placeOfOrigin = sandwich.getPlaceOfOrigin();
+        String alsoKnownAs = TextUtils.join(", ", sandwich.getAlsoKnownAs());
+        String ingredients = TextUtils.join(", ", sandwich.getIngredients());
+        String description = sandwich.getDescription();
 
-        placeOfOriginTv.setText(sandwich.getPlaceOfOrigin());
-        descriptionTv.setText(sandwich.getDescription());
+        if (TextUtils.isEmpty(placeOfOrigin)) placeOfOrigin = noData;
+        if (TextUtils.isEmpty(alsoKnownAs)) alsoKnownAs = noData;
+        if (TextUtils.isEmpty(ingredients)) ingredients = noData;
+        if (TextUtils.isEmpty(description)) description = noData;
+
+        placeOfOriginTv.setText(placeOfOrigin);
+        alsoKnownAsTv.setText(alsoKnownAs);
+        ingredientsTv.setText(ingredients);
+        descriptionTv.setText(description);
 
     }
 }

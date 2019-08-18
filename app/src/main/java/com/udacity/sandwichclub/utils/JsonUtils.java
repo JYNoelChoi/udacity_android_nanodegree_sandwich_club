@@ -11,6 +11,16 @@ import java.util.List;
 
 public class JsonUtils {
 
+    private static final String NAME = "name";
+    private static final String MAIN_NAME = "mainName";
+    private static final String ALSO_KNOWN_AS = "alsoKnownAs";
+    private static final String PLACE_OF_ORIGIN = "placeOfOrigin";
+    private static final String DESCRIPTION = "description";
+    private static final String IMAGE = "image";
+    private static final String INGREDIENTS = "ingredients";
+
+    private static final String FALL_BACK_STRING = "API did not provide data.";
+
     public static Sandwich parseSandwichJson(String json) throws JSONException {
         // Parse Json object
         JSONObject jsonParsed = null;
@@ -22,27 +32,28 @@ public class JsonUtils {
         }
 
         // get mainName
-        String mainName = jsonParsed.getJSONObject("name").getString("mainName");
+        String mainName = jsonParsed.getJSONObject(NAME).getString(MAIN_NAME);
 
         // get alsoKnownAs
         List<String> alsoKnownAsArray = new ArrayList<>();
-        JSONArray alsoKnownAsJsonArray = jsonParsed.getJSONObject("name").getJSONArray("alsoKnownAs");
+        JSONArray alsoKnownAsJsonArray = jsonParsed.getJSONObject(NAME).getJSONArray(ALSO_KNOWN_AS);
         for (int i = 0; i < alsoKnownAsJsonArray.length(); i++) {
             alsoKnownAsArray.add(alsoKnownAsJsonArray.getString(i));
         }
 
         // get PlaceOfOrigin
-        String placeOfOrigin = jsonParsed.getString("placeOfOrigin");
+        // String placeOfOrigin = jsonParsed.getString(PLACE_OF_ORIGIN);
+        String placeOfOrigin = jsonParsed.optString(PLACE_OF_ORIGIN, FALL_BACK_STRING);
 
         // get Description
-        String description = jsonParsed.getString("description");
+        String description = jsonParsed.getString(DESCRIPTION);
 
         // get ImageUrl
-        String imageUrl = jsonParsed.getString("image");
+        String imageUrl = jsonParsed.getString(IMAGE);
 
         // get Ingredients
         List<String> ingredientsArray = new ArrayList<>();
-        JSONArray ingredientsJsonArray = jsonParsed.getJSONArray("ingredients");
+        JSONArray ingredientsJsonArray = jsonParsed.getJSONArray(INGREDIENTS);
         for (int j = 0; j < ingredientsJsonArray.length(); j++) {
             ingredientsArray.add(ingredientsJsonArray.getString(j));
         }
