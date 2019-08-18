@@ -13,19 +13,23 @@ import com.udacity.sandwichclub.utils.JsonUtils;
 
 import org.json.JSONException;
 
+import java.util.List;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
 
     private Sandwich sandwich = null;
+    private ImageView ingredientsIv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        ImageView ingredientsIv = findViewById(R.id.image_iv);
+        // Grab views
+        ingredientsIv = findViewById(R.id.image_iv);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -52,14 +56,10 @@ public class DetailActivity extends AppCompatActivity {
             // Sandwich data unavailable
             closeOnError();
             return;
+        } else {
+            populateUI();
         }
 
-        populateUI();
-        Picasso.with(this)
-                .load(sandwich.getImage())
-                .into(ingredientsIv);
-
-        setTitle(sandwich.getMainName());
     }
 
     private void closeOnError() {
@@ -68,17 +68,31 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
-        TextView placeOfOrigin = findViewById(R.id.origin_tv);
-        TextView alsoKnownAs = findViewById(R.id.also_known_as_tv);
-        TextView ingredients = findViewById(R.id.ingredients_tv);
-        TextView description = findViewById(R.id.description_tv);
+        // Load image
+        Picasso.with(this)
+                .load(sandwich.getImage())
+                .into(ingredientsIv);
 
-        if (sandwich != null) {
-            placeOfOrigin.setText(sandwich.getPlaceOfOrigin());
-            alsoKnownAs.setText(sandwich.getAlsoKnownAs().toString());
-            ingredients.setText(sandwich.getIngredients().toString());
-            description.setText(sandwich.getDescription());
+        setTitle(sandwich.getMainName());
+
+        TextView placeOfOriginTv = findViewById(R.id.origin_tv);
+        TextView alsoKnownAsTv = findViewById(R.id.also_known_as_tv);
+        TextView ingredientsTv = findViewById(R.id.ingredients_tv);
+        TextView descriptionTv = findViewById(R.id.description_tv);
+
+        List<String> alsoKnownAsList = sandwich.getAlsoKnownAs();
+        List<String> ingredientsList = sandwich.getIngredients();
+
+        for (String alsoKnownAs : alsoKnownAsList) {
+            alsoKnownAsTv.append(alsoKnownAs + "\n\n");
         }
+
+        for (String ingredient : ingredientsList) {
+            ingredientsTv.append(ingredient + "\n\n");
+        }
+
+        placeOfOriginTv.setText(sandwich.getPlaceOfOrigin());
+        descriptionTv.setText(sandwich.getDescription());
 
     }
 }
